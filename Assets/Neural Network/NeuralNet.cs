@@ -2,7 +2,7 @@
 //// https://github.com/Blueteak/Unity-Neural-Network/
 ////
 
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,15 +24,15 @@ namespace NeuralNetwork
 
 		private static readonly System.Random random = new System.Random();
 
-		public NeuralNet(	int iS, //// inputSize
-											int nHL, //// numHiddenLayers
-											int hS, //// hiddenSize
-											int oS, //// outputSize
-											double? learnRate = null,
-											double? momentum = null
-										)
+		public NeuralNet(
+			int iS, //// inputSize
+			int nHL, //// numHiddenLayers
+			int hS, //// hiddenSize
+			int oS, //// outputSize
+			double? learnRate = null,
+			double? momentum = null
+			)
 		{
-
 
 			inputSize = iS;
 			numHiddenLayers = nHL;
@@ -128,8 +128,6 @@ namespace NeuralNetwork
 			// return Random
 		}
 	}
-
-
 
 
 

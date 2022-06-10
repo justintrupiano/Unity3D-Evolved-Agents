@@ -13,9 +13,6 @@ namespace NeuralNetwork
 		public double BiasDelta { get; set; }
 		public double Gradient { get; set; }
 		public double Value { get; set; }
-		// public bool dropout = true;
-		// public float dropoutRate = 0.99f;
-
 
 		public Neuron()
 			{
@@ -36,11 +33,7 @@ namespace NeuralNetwork
 
 			public virtual double CalculateValue()
 			{
-				// if (Random.Range(0.0f, 1.0f) > dropoutRate)
-				// 	return Value = Random.Range(0.0f, 1.0f);
-				//
-				// else
-					return Value = Sigmoid.Output(InputSynapses.Sum(a => a.Weight * a.InputNeuron.Value) + Bias);
+				return Value = Sigmoid.Output(InputSynapses.Sum(a => a.Weight * a.InputNeuron.Value) + Bias);
 			}
 
 			public double CalculateError(double target)
@@ -82,7 +75,6 @@ namespace NeuralNetwork
 			InputNeuron = inputNeuron;
 			OutputNeuron = outputNeuron;
 			Weight = NeuralNet.GetRandom();
-			// Weight = Random.Range(-1.0f,1.0f);
 		}
 	}
 
