@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using NeuralNetwork;
 
-public class MultipleXORAgents : MultipleAgents
+public class Multiple_XOR_Agents : MultipleAgents
 {
   public List<int> genePool;
 

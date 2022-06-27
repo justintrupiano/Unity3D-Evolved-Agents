@@ -21,43 +21,41 @@ public class XOR_Agent : Agent
       NewAgent();
     }
 
-    public void UpdatePreviousNet(){
-      previousNet = net;
-    }
 
 
-    public void ChangeColor(double output){
-      if (output == 0){
-        renderer.material.SetColor("_Color", Color.black);
-      }
-      else if (output == 1){
-        renderer.material.SetColor("_Color", Color.white);
-      }
-    }
+
+    // public void ChangeColor(double output){
+    //   if (output == 0){
+    //     renderer.material.SetColor("_Color", Color.black);
+    //   }
+    //   else if (output == 1){
+    //     renderer.material.SetColor("_Color", Color.white);
+    //   }
+    // }
 
     public void ChangeText(double output){
       displayText.text = output.ToString();
     }
 
-    public void Flash(double output){
-      if (output == 1){
-        GetComponent<ParticleSystem>().Play();
-      }
-    }
+    // public void Flash(double output){
+    //   if (output == 1){
+    //     GetComponent<ParticleSystem>().Play();
+    //   }
+    // }
 
-    public void move(double[] pos){
-      transform.position += new Vector3(  ExtendedMath.Map((float)pos[0], 0f, 1f, -1f, 1f),
-                                          ExtendedMath.Map((float)pos[1], 0f, 1f, -1f, 1f),
-                                          ExtendedMath.Map((float)pos[2], 0f, 1f, -1f, 1f));
-      transform.position += Random.insideUnitSphere;
-    }
+    // public void move(double[] pos){
+    //   transform.position += new Vector3(  ExtendedMath.Map((float)pos[0], 0f, 1f, -1f, 1f),
+    //                                       ExtendedMath.Map((float)pos[1], 0f, 1f, -1f, 1f),
+    //                                       ExtendedMath.Map((float)pos[2], 0f, 1f, -1f, 1f));
+    //   transform.position += Random.insideUnitSphere;
+    // }
 
-    private float GetEnergy(){
-      float returnEnergy;
-      float distance = Vector3.Distance(Vector3.zero, transform.position);
-      returnEnergy = ExtendedMath.Map(distance, 0, 100, 0.1f, 0);
-      return returnEnergy;
-    }
+    // private float GetEnergy(){
+    //   float returnEnergy;
+    //   float distance = Vector3.Distance(Vector3.zero, transform.position);
+    //   returnEnergy = ExtendedMath.Map(distance, 0, 100, 0.1f, 0);
+    //   return returnEnergy;
+    // }
 
     // public double[] calculateOutputs(double[] inputs){
     //   double[] outputData = net.Compute(inputs);

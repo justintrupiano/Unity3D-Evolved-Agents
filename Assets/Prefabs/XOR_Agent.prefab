@@ -146,7 +146,7 @@ GameObject:
   - component: {fileID: 4284975436871293536}
   - component: {fileID: 4284975436871293537}
   m_Layer: 0
-  m_Name: XORAgent
+  m_Name: XOR_Agent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
