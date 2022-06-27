@@ -5,22 +5,9 @@ using System.Linq;
 using UnityEngine;
 using NeuralNetwork;
 
-public class MultipleAgentsScript : MonoBehaviour
+public class Multiple_XOR_Agents : MultipleAgents
 {
   public List<int> genePool;
-  public int inputSize;
-  public int hiddenSize;
-  public int numHiddenLayers;
-  public int outputSize;
-
-  public List<GameObject> agents;
-  public int numAgents;
-  public GameObject agentPrefab;
-
-
-  // Range from 0.0 to 0.5
-  [Range(0.0f, 0.5f)]
-  public float globalMutationRate = 0.1f;
 
   // // XOR
   public static double[,] inputData = new double[4,2] { {0, 0}, {0, 1}, {1, 0}, {1, 1} };
@@ -30,8 +17,6 @@ public class MultipleAgentsScript : MonoBehaviour
   // public static double[,] inputData = new double[4,2] { {0, 0}, {0, 1}, {1, 0}, {1, 1} };
   // public static double[] answerData = new double[4] {1, 0, 0, 1};
 
-  // public static double[,] inputData = new double[2,2] { {0, 0},{1, 1} };
-  // public static double[] answerData = new double[2] {0, 1};
 
   public double[] currentTestData = new double[2];
 
@@ -41,16 +26,7 @@ public class MultipleAgentsScript : MonoBehaviour
   public int generationLength;
   public int generationCount;
   private int generationCountDown;
-
-  // public double averageFitness = 0.0;
-  // public double maxFitness = 0.0;
-
-  // public float PercentCorrect = 0f;
-
-  // public float startEnergy;
-  // public float energyLossRate;
   public int GenePoolSize;
-  // private IEnumerator copyCoroutine;
 
   void Start(){
     // This counts down frames
@@ -59,11 +35,7 @@ public class MultipleAgentsScript : MonoBehaviour
     // This stores the index of the agents who enter the genepool
     genePool = new List<int>();
 
-    // Fill the agents array with all new agents
-    allNewAgents();
-    // Debug.Log(map(0.999f, 0, 1, -1,1));
-    // copyCoroutine = CopyANew(2);
-    // StartCoroutine(copyCoroutine);
+    ArrangeAgentsIntoGrid();
   }
 
   void Update(){
@@ -72,21 +44,40 @@ public class MultipleAgentsScript : MonoBehaviour
 
     generationCountDown--;
     if (generationCountDown <= 0) {
-      // Debug.Log("Generation " + generationCount.ToString());
       generationCount++;
       generationCountDown = generationLength;
-      // UpdateFitnessAndGenePool_XOR();
       UpdateGenePool();
       NewGeneration(2);
 
     }
-    // RunTest();
   }
 
 
+  void ArrangeAgentsIntoGrid(){
+        int i = 0;
+    double sqRtAgents = Mathf.Sqrt(numAgents);
+    for (int x = 0; x < sqRtAgents; x++)
+    {
+      for (int y = 0; y < sqRtAgents; y++)
+      {
+        GameObject agent = Instantiate(agentPrefab);
+        agents.Add(agent);
+
+        agents[i].transform.parent = gameObject.transform;
+        agents[i].name = "agent_" + i.ToString("D6");
+        agents[i].GetComponent<XOR_Agent>().agentNum = i;
+        agents[i].transform.position = new Vector3(x, y, 0);
+
+        i++;
+      }
+    }
+  }
 
   private void NewGeneration(int numParents){
     // Debug.Log("Copy A New");
+    if (GenePoolSize < numParents){
+      Debug.Log("Error Genepool must be larger than numParents");
+    }
     foreach(GameObject updateAgent in agents){
      
 
@@ -95,14 +86,14 @@ public class MultipleAgentsScript : MonoBehaviour
       for(int p = 0; p < numParents; p++)
       { // Get random agent from gene pool
         int randomAgentIndex = Random.Range(0, genePool.Count);
-        nets.Add(agents[genePool[randomAgentIndex]].GetComponent<XOR_AgentScript>().previousNet);
+        nets.Add(agents[genePool[randomAgentIndex]].GetComponent<XOR_Agent>().previousNet);
       }
       
       NeuralNetwork.NeuralNet outputNet = NNCopy.copyMultiple( nets, 0.1f );
       NeuralNetwork.NNCopy.MutateWeightsAndBias(outputNet, globalMutationRate, 0.25f);
 
       // // // //
-      updateAgent.GetComponent<XOR_AgentScript>().net = outputNet;
+      updateAgent.GetComponent<XOR_Agent>().net = outputNet;
 
       // Debug.Log(updateAgent.name);
       // NeuralNetwork.NNCopy.PrintWeightsAndBias(updateAgent.GetComponent<XOR_AgentScript>().net);
@@ -122,7 +113,10 @@ public class MultipleAgentsScript : MonoBehaviour
 
     //// TODO This should just happen once and the agentscripts could be stored.
     foreach (GameObject agent in agents){
-      XOR_AgentScript agentScript = agent.GetComponent<XOR_AgentScript>();
+      XOR_Agent agentScript = agent.GetComponent<XOR_Agent>();
+      if (agentScript == null){
+        Debug.Log("Agent Script is null");
+      }
 
       double agentChoice = XORTest(agentScript);
       // agentScript.ChangeColor(agentChoice);
@@ -141,8 +135,8 @@ public class MultipleAgentsScript : MonoBehaviour
 
   }
 
-  double XORTest(XOR_AgentScript agentScript){
-    double[] agentGuess = agentScript.calculateGuess(currentTestData);
+  double XORTest(Agent agentScript){
+    double[] agentGuess = agentScript.calculateOutputs(currentTestData);
       // This should be sigmoid
       return (agentGuess[0] > agentGuess[1]) ? 0 : 1;
       
@@ -157,7 +151,7 @@ public class MultipleAgentsScript : MonoBehaviour
     // For each agent in agents make a list of their fitnesses
     Dictionary<int, float> fitnesses = new Dictionary<int, float>();
     foreach (GameObject agent in agents){
-      XOR_AgentScript agentScript = agent.GetComponent<XOR_AgentScript>();
+      XOR_Agent agentScript = agent.GetComponent<XOR_Agent>();
       fitnesses.Add(agentScript.agentNum, agentScript.NumCorrect);
       agentScript.NumCorrect = 0;
     }
@@ -170,7 +164,7 @@ public class MultipleAgentsScript : MonoBehaviour
       float NormalRandomNum = Mathf.Clamp(Mathf.Abs(ExtendedMath.generateNormalRandom(0, 0.1f)), 0, 1);
       int chosenAgent = fitnesses.ElementAt((int)Mathf.Floor(NormalRandomNum*(fitnesses.Count-1))).Key;
       genePool.Add(chosenAgent);
-      agents[chosenAgent].GetComponent<XOR_AgentScript>().UpdatePreviousNet();
+      agents[chosenAgent].GetComponent<XOR_Agent>().UpdatePreviousNet();
       // Debug.Log(chosenAgent);
     }
 
@@ -185,34 +179,34 @@ public class MultipleAgentsScript : MonoBehaviour
     currentTestData[ 1 ] = inputData[ testSetIndex, 1 ];
   }
 
-  public void allNewAgents(){
-    // agents = new GameObject[numAgents];
-    agents = new List<GameObject>();
+  // public void allNewAgents(){
+  //   // agents = new GameObject[numAgents];
+  //   agents = new List<GameObject>();
 
 
-    int i = 0;
-    double sqRtAgents = Mathf.Sqrt(numAgents);
-    // for (int x = -(int)sqRtAgents/2; x <= (int)sqRtAgents/2; x++)
-    for (int x = 0; x < sqRtAgents; x++)
-    {
-      // for (int y = -(int)sqRtAgents/2; y <= (int)sqRtAgents/2; y++)
-      for (int y = 0; y < sqRtAgents; y++)
-      {
-        GameObject agent = Instantiate(agentPrefab);
-        agents.Add(agent);
-        // int currentAgent = agents.Count - 1;
+  //   int i = 0;
+  //   double sqRtAgents = Mathf.Sqrt(numAgents);
+  //   // for (int x = -(int)sqRtAgents/2; x <= (int)sqRtAgents/2; x++)
+  //   for (int x = 0; x < sqRtAgents; x++)
+  //   {
+  //     // for (int y = -(int)sqRtAgents/2; y <= (int)sqRtAgents/2; y++)
+  //     for (int y = 0; y < sqRtAgents; y++)
+  //     {
+  //       GameObject agent = Instantiate(agentPrefab);
+  //       agents.Add(agent);
+  //       // int currentAgent = agents.Count - 1;
 
-        agents[i].transform.parent = gameObject.transform;
-        agents[i].name = "agent_" + i.ToString("D6");
-        agents[i].GetComponent<XOR_AgentScript>().agentNum = i;
-        agents[i].transform.position = new Vector3(x, y, 0);
-        // Debug.Log(x);
-        // Debug.Log(y);
+  //       agents[i].transform.parent = gameObject.transform;
+  //       agents[i].name = "agent_" + i.ToString("D6");
+  //       agents[i].GetComponent<XOR_Agent>().agentNum = i;
+  //       agents[i].transform.position = new Vector3(x, y, 0);
+  //       // Debug.Log(x);
+  //       // Debug.Log(y);
 
-        i++;
-      }
-    }
+  //       i++;
+  //     }
+  //   }
 
-  }
+  // }
 
 }

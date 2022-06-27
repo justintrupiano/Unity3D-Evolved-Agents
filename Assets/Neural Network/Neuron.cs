@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//// https://github.com/Blueteak/Unity-Neural-Network/
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
