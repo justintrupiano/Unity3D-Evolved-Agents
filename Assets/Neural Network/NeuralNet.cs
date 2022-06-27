@@ -1,6 +1,4 @@
-////
 //// https://github.com/Blueteak/Unity-Neural-Network/
-////
 
 using UnityEngine;
 using System.Collections;

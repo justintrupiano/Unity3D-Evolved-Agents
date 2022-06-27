@@ -5,19 +5,8 @@ using TMPro;
 
 using NeuralNetwork;
 
-public class XOR_AgentScript : MonoBehaviour
+public class XOR_Agent : Agent
 {
-    public NeuralNet net;
-    public NeuralNet previousNet;
-    public int inputSize;
-    public int hiddenSize;
-    public int numHiddenLayers;
-    public int outputSize;
-    public int agentNum;
-
-    // public double[,] inputData;
-    public double[] outputs;
-    public double fitness = 0.0;
     public double totalDifferenceCounter = 0.0;
 
     public int NumCorrect;
@@ -28,15 +17,8 @@ public class XOR_AgentScript : MonoBehaviour
 
 
     void Start()
-    {
-      MultipleAgentsScript multipleAgents = GetComponentInParent<MultipleAgentsScript>();
-      inputSize = multipleAgents.inputSize;
-      hiddenSize = multipleAgents.hiddenSize;
-      numHiddenLayers = multipleAgents.numHiddenLayers;
-      outputSize = multipleAgents.outputSize;
-      net = new NeuralNet(inputSize, hiddenSize, numHiddenLayers, outputSize);
-
-      renderer = GetComponent<Renderer>();
+   {
+      NewAgent();
     }
 
     public void UpdatePreviousNet(){
@@ -77,10 +59,10 @@ public class XOR_AgentScript : MonoBehaviour
       return returnEnergy;
     }
 
-    public double[] calculateGuess(double[] inputs){
-      double[] outputData = net.Compute(inputs);
-      outputs = outputData;
-      return outputData;
-    }
+    // public double[] calculateOutputs(double[] inputs){
+    //   double[] outputData = net.Compute(inputs);
+    //   outputs = outputData;
+    //   return outputData;
+    // }
 
 }
