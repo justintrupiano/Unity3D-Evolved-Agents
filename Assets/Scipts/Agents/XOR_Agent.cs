@@ -17,21 +17,11 @@ public class XOR_Agent : Agent
 
 
     void Start()
-   {
+    {
       NewAgent();
     }
 
 
-
-
-    // public void ChangeColor(double output){
-    //   if (output == 0){
-    //     renderer.material.SetColor("_Color", Color.black);
-    //   }
-    //   else if (output == 1){
-    //     renderer.material.SetColor("_Color", Color.white);
-    //   }
-    // }
 
     public void ChangeText(double output){
       displayText.text = output.ToString();
@@ -43,11 +33,13 @@ public class XOR_Agent : Agent
     //   }
     // }
 
-    // public void move(double[] pos){
-    //   transform.position += new Vector3(  ExtendedMath.Map((float)pos[0], 0f, 1f, -1f, 1f),
-    //                                       ExtendedMath.Map((float)pos[1], 0f, 1f, -1f, 1f),
-    //                                       ExtendedMath.Map((float)pos[2], 0f, 1f, -1f, 1f));
-    //   transform.position += Random.insideUnitSphere;
+    // public void ChangeColor(double output){
+    //   if (output == 0){
+    //     renderer.material.SetColor("_Color", Color.black);
+    //   }
+    //   else if (output == 1){
+    //     renderer.material.SetColor("_Color", Color.white);
+    //   }
     // }
 
     // private float GetEnergy(){
